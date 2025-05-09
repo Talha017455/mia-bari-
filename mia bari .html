@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mia Bari Masik Payment</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    #member-form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    #member-list {
+      list-style: none;
+      padding: 0;
+    }
+    #member-list li {
+      background: white;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mia Bari Masik Payment</h1>
+
+  <div id="member-form">
+    <input type="text" id="member-name" placeholder="Member Name" />
+    <button onclick="addMember()">Add Member</button>
+  </div>
+
+  <ul id="member-list"></ul>
+
+  <script>
+    let members = JSON.parse(localStorage.getItem('members')) || [];
+
+    function saveMembers() {
+      localStorage.setItem('members', JSON.stringify(members));
+      displayMembers();
+    }
+
+    function addMember() {
+      const nameInput = document.getElementById('member-name');
+      const name = nameInput.value.trim();
+      if (name) {
+        members.push({ name, payments: [] });
+        nameInput.value = '';
+        saveMembers();
+      }
+    }
+
+    function displayMembers() {
+      const list = document.getElementById('member-list');
+      list.innerHTML = '';
+      members.forEach((m, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${m.name} - ${m.payments.length} payments`;
+        li.onclick = () => addPayment(index);
+        list.appendChild(li);
+      });
+    }
+
+    function addPayment(index) {
+      const date = new Date().toISOString().split('T')[0];
+      members[index].payments.push(date);
+      saveMembers();
+    }
+
+    displayMembers();
+  </script>
+</body>
+</html>
+
